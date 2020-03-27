@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { PokemonType } from './PokemonType';
 
 export function Pokedex() {
   const [selectedPokemon, setSelectedPokemon] = useState(undefined);
+  const searchBox = useRef(null);
 
   async function getPokemonInfo(name) {
     const url = `https://pokeapi.co/api/v2/pokemon/${name.toLowerCase()}`;
@@ -13,6 +14,11 @@ export function Pokedex() {
     // console.log(data);
 
     const response = await fetch(url);
+    if (!response.ok) {
+      alert("Pokemon does not exist");
+      return;
+    }
+    
     const data = await response.json();
 
     // console.log(data);
@@ -29,13 +35,16 @@ export function Pokedex() {
             console.log(type);
             return <PokemonType type={type.type.name} />
           })}
+          <img src={selectedPokemon.sprites.front_default} alt="sprite" />
         </div>
       )}
       <button onClick={() => getPokemonInfo("squirtle")}>Squirtle</button>
       <button onClick={() => getPokemonInfo("charmander")}>Charmander</button>
       <button onClick={() => getPokemonInfo("bulbasaur")}>Bulbasaur</button>
-      <button onClick={() => getPokemonInfo("pidgeot")}>Pidgeot</button>
-
+      <input ref={searchBox} />
+      <button>Search</button>
     </div>
   );
 }
+
+
